@@ -4,6 +4,13 @@
 ;;; microKanren: A Minimal Function Core for Relational Programming.
 ;;; http://webyrd.net/scheme-2013/papers/HemannMuKanren2013.pdf
 
+(provide var 
+         var?
+         walk
+         ==
+         unit
+         unify)
+
 (define var (lambda (x) (vector x)))
 (define var? (lambda (x) (vector? x)))
 (define (var=? x1 x2) (= (vector-ref x1 0)

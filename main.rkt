@@ -2,9 +2,8 @@
 
 (module+ test (require rackunit))
 
-(provide == run call/fresh disj conj)
-
 (require "core.rkt")
+(require "mini.rkt")
 
 ;;; User-level extensions.
 
