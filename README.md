@@ -1,3 +1,3 @@
 microKanren
 ===========
-README text here.
+A Racket implementation of microKanren.

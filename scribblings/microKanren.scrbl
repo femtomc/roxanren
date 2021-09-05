@@ -3,8 +3,8 @@
                     racket/base]]
 
 @title{microKanren}
-@author{mccoybecker}
+@author{femtomc}
 
 @defmodule[microKanren]
 
-Package Description Here
+A Racket implementation of microKanren.
