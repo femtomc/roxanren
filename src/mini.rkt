@@ -8,7 +8,7 @@
 
 (require "core.rkt")
 
-(provide empty-state
+(provide empty-s
          fresh
          conde
          run
@@ -16,9 +16,9 @@
 
 (module+ test (require rackunit))
 
-(define empty-state '(() . 0))
+(define empty-s '(() . 0))
 
-(define (call/goal g) (g empty-state))
+(define (call/goal g) (g empty-s))
 
 (define (pull $)
   (if (procedure? $) (pull ($)) $))
@@ -73,9 +73,16 @@
 ;;;
 
 (module+ test
-         (check-equal? ((== #t #f) empty-state) '())
-         (check-equal? ((== (var 'x) (var 'y)) empty-state) 
+         (check-equal? ((== #t #f) empty-s) '())
+         (check-equal? ((== (var 'x) (var 'y)) empty-s) 
                        `((((#(x) . #(y))) . 0)))
+         )
+
+(module+ test
+         (define x (var 'x))
+         (define y (var 'y))
+         (check-equal? ((disj (== 'olive x) (== 'oil x)) `(()))
+                       `((((#(x) . ,'olive))) (((#(x) . ,'oil)))))
          )
 
 ;;;

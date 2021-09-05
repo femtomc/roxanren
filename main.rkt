@@ -22,9 +22,8 @@
 ;;; miniKanren extensions.
 ;;;
 
-(provide 
-  empty-state
-  fresh
-  ==
-  run
-  run*)
+(provide empty-s
+         fresh
+         ==
+         run
+         run*)
