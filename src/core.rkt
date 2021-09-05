@@ -1,9 +1,11 @@
 #lang racket/base
 
+;;;
 ;;; Code from:
 ;;; microKanren: A Minimal Function Core for Relational Programming.
 ;;; http://webyrd.net/scheme-2013/papers/HemannMuKanren2013.pdf
 ;;; As well as: The Reasoned Schemer, Chapter 10.
+;;;
 
 (provide var 
          var?
@@ -19,11 +21,14 @@
 
 ; ------------------------------------------- ;
 
+;;;
 ;;; racket/base doesn't provide `assp`
 ;;; so here's a small recursive implementation.
+;;;
 
 (define (assp ch lst)
   (cond
+    ((null? lst) #f)
     ((ch (car (car lst))) (car lst))
     ((null? (cdr lst)) #f)
     (else (assp ch (cdr lst)))))
@@ -35,7 +40,9 @@
 
 ; ------------------------------------------ ;
 
+;;;
 ;;; microKanren
+;;;
 
 (define var (lambda (x) (vector x)))
 (define var? (lambda (x) (vector? x)))
@@ -46,7 +53,10 @@
   (let ((pr (and (var? u) (assp (lambda (v) (var=? u v)) s))))
     (if pr (walk (cdr pr) s) u)))
 
-;;; These tests come straight of The Reasoned Schemer, Chapter 10.
+;;;
+;;; These tests come straight from The Reasoned Schemer, Chapter 10.
+;;;
+
 (module+ test
          (define v (var 'v))
          (define w (var 'w))
@@ -61,13 +71,13 @@
 
 (define (ext-s x v s) `((,x . ,v) . ,s))
 
+(define (unit s/c) (cons s/c mzero))
+(define mzero `())
+
 (define (== u v)
   (lambda (s/c)
     (let ((s (unify u v (car s/c))))
       (if s (unit `(,s . ,(cdr s/c))) mzero))))
-
-(define (unit s/c) (cons s/c mzero))
-(define mzero `())
 
 (define (unify u v s)
   (let ((u (walk u s)) (v (walk v s)))

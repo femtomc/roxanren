@@ -1,10 +1,12 @@
 #lang racket/base
 
+;;;
 ;;; User-level extensions.
 ;;;
 ;;; Many of these are taken from:
 ;;; A unified approach to solving seven programming pearls (functional pearl)
 ;;; https://dl.acm.org/doi/10.1145/3110252
+;;;
 
 (require "core.rkt")
 (require "mini.rkt")

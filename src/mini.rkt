@@ -1,12 +1,15 @@
 #lang racket/base
 
+;;;
 ;;; miniKanren extensions
 ;;; From: https://github.com/jasonhemann/microKanren
 ;;;       The Reasoned Schemer, Chapter 10.
+;;;
 
 (require "core.rkt")
 
-(provide fresh
+(provide empty-state
+         fresh
          conde
          run
          run*)
@@ -65,6 +68,20 @@
                      (app-f/v* (- n 1) (cons x v*)))))))))
     (app-f/v* n '())))
 
+;;;
+;;; These tests combine microKanren with miniKanren extensions.
+;;;
+
+(module+ test
+         (check-equal? ((== #t #f) empty-state) '())
+         (check-equal? ((== (var 'x) (var 'y)) empty-state) 
+                       `((((#(x) . #(y))) . 0)))
+         )
+
+;;;
+;;; These are syntax extensions standard to miniKanren.
+;;;
+
 (define-syntax Zzz
   (syntax-rules ()
     ((_ g) (lambda (s/c) (lambda () (g s/c))))))
@@ -102,5 +119,5 @@
      (map reify-1st (take-all (call/goal (fresh (x ...) g0 g ...)))))))
 
 (module+ test
-         (check-equal? (run* (q) (== q 'pea)) 'pea)
+         (check-equal? (run* (q) (== q 'pea)) '(pea))
          )
