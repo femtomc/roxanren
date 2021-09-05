@@ -1,8 +1,8 @@
 #lang racket/base
 
-(require "core.rkt")
-(require "mini.rkt")
-(require "extensions.rkt")
+(require "src/core.rkt")
+(require "src/mini.rkt")
+(require "src/extensions.rkt")
 
 (provide 
   fresh
