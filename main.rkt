@@ -4,7 +4,14 @@
 
 (require "core.rkt")
 (require "mini.rkt")
+(require "extensions.rkt")
 
-;;; User-level extensions.
+(provide 
+  fresh
+  ==
+  run
+  run*
+  appendo
+  proof?)
 
 ;;; Test suite.

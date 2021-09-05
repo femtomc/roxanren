@@ -4,6 +4,10 @@
 ;;; From: https://github.com/jasonhemann/microKanren
 ;;;       The Reasoned Schemer, Chapter 10.
 
+(provide fresh
+         run
+         run*)
+
 (define-syntax Zzz
   (syntax-rules ()
     ((_ g) (lambda (s/c) (lambda () (g s/c))))))
