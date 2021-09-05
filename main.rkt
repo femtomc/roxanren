@@ -9,11 +9,4 @@
   ==
   run
   run*
-  appendo
-  proof?)
-
-;;; Test suite.
-
-(module+ test (require rackunit)
-         (check-equal? (run* q (== 'pea q)) 'pea)
-         )
+  appendo)

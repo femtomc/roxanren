@@ -3,22 +3,61 @@
 ;;; Code from:
 ;;; microKanren: A Minimal Function Core for Relational Programming.
 ;;; http://webyrd.net/scheme-2013/papers/HemannMuKanren2013.pdf
+;;; As well as: The Reasoned Schemer, Chapter 10.
 
 (provide var 
          var?
+         call/fresh
          walk
+         disj
+         conj
          ==
          unit
          unify)
 
+(module+ test (require rackunit))
+
+; ------------------------------------------- ;
+
+;;; racket/base doesn't provide `assp`
+;;; so here's a small recursive implementation.
+
+(define (assp ch lst)
+  (cond
+    ((ch (car (car lst))) (car lst))
+    ((null? (cdr lst)) #f)
+    (else (assp ch (cdr lst)))))
+
+(module+ test 
+         (check-equal? (assp (lambda (v) (eq? v 5)) '((1 3) (5 5))) '(5 5))
+         (check-equal? (assp (lambda (v) (eq? v 'pea)) '((5 4) ('pod 'pod))) #f)
+         )
+
+; ------------------------------------------ ;
+
+;;; microKanren
+
 (define var (lambda (x) (vector x)))
 (define var? (lambda (x) (vector? x)))
-(define (var=? x1 x2) (= (vector-ref x1 0)
-                         (vector-ref x2 0)))
+(define (var=? x1 x2) (eq? (vector-ref x1 0)
+                           (vector-ref x2 0)))
 
 (define (walk u s)
   (let ((pr (and (var? u) (assp (lambda (v) (var=? u v)) s))))
     (if pr (walk (cdr pr) s) u)))
+
+;;; These tests come straight of The Reasoned Schemer, Chapter 10.
+(module+ test
+         (define v (var 'v))
+         (define w (var 'w))
+         (define x (var 'x))
+         (define y (var 'y))
+         (define z (var 'z))
+         (check-equal? (walk y `((,z . a) (,z . ,w) (,y . ,z))) 'a)
+         (check-equal? (walk w `((,x . ,y) (,v . ,x) (,w . ,x))) y)
+         (check-equal? (walk w `((,x . 'b) (,z . ,y) (,w . (,x 'e ,z)))) 
+                       '(#(x) 'e #(z)))
+         )
 
 (define (ext-s x v s) `((,x . ,v) . ,s))
 
