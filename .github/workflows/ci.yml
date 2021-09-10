@@ -16,9 +16,9 @@ jobs:
           distribution: full
           variant: ${{ matrix.racket-variant }}
           version: ${{ matrix.racket-version }}
-      - name: Installing microKanren and its dependencies
-        run: raco pkg install --no-docs --auto --name microKanren
-      - name: Compiling microKanren and building its docs
-        run: raco setup --check-pkg-deps --unused-pkg-deps microKanren
-      - name: Testing microKanren
-        run: raco test -x -p microKanren
+      - name: Installing roxanren and its dependencies
+        run: raco pkg install --no-docs --auto --name roxanren
+      - name: Compiling roxanren and building its docs
+        run: raco setup --check-pkg-deps --unused-pkg-deps roxanren
+      - name: Testing roxanren
+        run: raco test -x -p roxanren
