@@ -29,8 +29,8 @@
 
 (define (take n $)
   (if (zero? n) '()
-      (let (($ (pull $)))
-        (if (null? $) '() (cons (car $) (take (- n 1) (cdr $)))))))
+    (let (($ (pull $)))
+      (if (null? $) '() (cons (car $) (take (- n 1) (cdr $)))))))
 
 (define (reify-1st s/c)
   (let ((v (walk* (var 0) (car s/c))))
@@ -73,17 +73,17 @@
 ;;;
 
 (module+ test
-         (check-equal? ((== #t #f) empty-s) '())
-         (check-equal? ((== (var 'x) (var 'y)) empty-s) 
-                       `((((#(x) . #(y))) . 0)))
-         )
+  (check-equal? ((== #t #f) empty-s) '())
+  (check-equal? ((== (var 'x) (var 'y)) empty-s) 
+                `((((#(x) . #(y))) . 0)))
+  )
 
 (module+ test
-         (define x (var 'x))
-         (define y (var 'y))
-         (check-equal? ((disj (== 'olive x) (== 'oil x)) `(()))
-                       `((((#(x) . ,'olive))) (((#(x) . ,'oil)))))
-         )
+  (define x (var 'x))
+  (define y (var 'y))
+  (check-equal? ((disj (== 'olive x) (== 'oil x)) `(()))
+                `((((#(x) . ,'olive))) (((#(x) . ,'oil)))))
+  )
 
 ;;;
 ;;; These are syntax extensions standard to miniKanren.
@@ -126,5 +126,10 @@
      (map reify-1st (take-all (call/goal (fresh (x ...) g0 g ...)))))))
 
 (module+ test
-         (check-equal? (run* (q) (== q 'pea)) '(pea))
-         )
+  (check-equal? (run* (q) (== q 'pea)) '(pea))
+  (check-equal? (run* (l r) (== l r) (== l 3))
+                `(3))
+  (check-equal? (run* (q) (fresh (l r) (== q `(,l ,r))
+                            (== l 10) (== r 20)))
+                '((10 20)))
+  )

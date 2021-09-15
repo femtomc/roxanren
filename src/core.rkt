@@ -34,9 +34,9 @@
     (else (assp ch (cdr lst)))))
 
 (module+ test 
-         (check-equal? (assp (lambda (v) (eq? v 5)) '((1 3) (5 5))) '(5 5))
-         (check-equal? (assp (lambda (v) (eq? v 'pea)) '((5 4) ('pod 'pod))) #f)
-         )
+  (check-equal? (assp (lambda (v) (eq? v 5)) '((1 3) (5 5))) '(5 5))
+  (check-equal? (assp (lambda (v) (eq? v 'pea)) '((5 4) ('pod 'pod))) #f)
+  )
 
 ; ------------------------------------------ ;
 
@@ -49,6 +49,7 @@
 (define (var=? x1 x2) (eq? (vector-ref x1 0)
                            (vector-ref x2 0)))
 
+;; This version of `walk` just uses a list of pairs.
 (define (walk u s)
   (let ((pr (and (var? u) (assp (lambda (v) (var=? u v)) s))))
     (if pr (walk (cdr pr) s) u)))
@@ -58,16 +59,44 @@
 ;;;
 
 (module+ test
-         (define v (var 'v))
-         (define w (var 'w))
-         (define x (var 'x))
-         (define y (var 'y))
-         (define z (var 'z))
-         (check-equal? (walk y `((,z . a) (,z . ,w) (,y . ,z))) 'a)
-         (check-equal? (walk w `((,x . ,y) (,v . ,x) (,w . ,x))) y)
-         (check-equal? (walk w `((,x . 'b) (,z . ,y) (,w . (,x 'e ,z)))) 
-                       '(#(x) 'e #(z)))
-         )
+  (define v (var 'v))
+  (define w (var 'w))
+  (define x (var 'x))
+  (define y (var 'y))
+  (define z (var 'z))
+  (check-equal? (walk y `((,z . a) (,z . ,w) (,y . ,z))) 'a)
+  (check-equal? (walk w `((,x . ,y) (,v . ,x) (,w . ,x))) y)
+  (check-equal? (walk w `((,x . 'b) (,z . ,y) (,w . (,x 'e ,z)))) 
+                '(#(x) 'e #(z)))
+  )
+
+;; This is an alternative version of `walk` which uses a mutable hash map.
+
+(define (hash-set-list! ht k v)
+  (cond
+    ((var? v) (hash-set! ht k v))
+    (else 
+      (let ((pr (hash-ref ht k #f)))
+        (if pr (hash-set! ht k (append '(,v) pr)) 
+          (hash-set! ht k '(,v)))
+        ))))
+
+(define (hash-walk u s)
+  (let ((pr (and (var? u) (hash-ref s u #f))))
+    (if pr (hash-walk pr s) u)))
+
+(module+ test
+  (define ht1 (make-hash))
+  (hash-set! ht1 z 'a)
+  (hash-set! ht1 z w)
+  (hash-set! ht1 y z)
+  (check-equal? (hash-walk y ht1) 'a)
+  (define ht2 (make-hash))
+  (hash-set! ht2 x y)
+  (hash-set! ht2 v x)
+  (hash-set! ht2 w x)
+  (check-equal? (hash-walk w ht2) y)
+  )
 
 (define (ext-s x v s) `((,x . ,v) . ,s))
 

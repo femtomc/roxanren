@@ -1,13 +1,10 @@
 #lang racket/base
 
-(require "src/core.rkt")
-(require "src/mini.rkt")
-(require "src/extensions.rkt")
-
 ;;;
 ;;; Core microKanren.
 ;;;
 
+(require "src/core.rkt")
 (provide var 
          var?
          call/fresh
@@ -22,8 +19,16 @@
 ;;; miniKanren extensions.
 ;;;
 
+(require "src/mini.rkt")
 (provide empty-s
          fresh
          ==
          run
          run*)
+
+;;;
+;;; Extensions.
+;;;
+
+(require "src/extensions/appendo.rkt")
+(provide appendo)
